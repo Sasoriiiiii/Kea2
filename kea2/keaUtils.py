@@ -186,6 +186,7 @@ class Options:
             raise ValueError("--throttle should be greater than or equal to 0")
 
         _check_package_installation(self.packageNames)
+        _save_bug_report_configs(self)
 
 
 def _check_package_installation(packageNames):
@@ -195,6 +196,20 @@ def _check_package_installation(packageNames):
         if package not in installed_packages:
             logger.error(f"package {package} not installed. Abort.")
             raise ValueError("package not installed")
+
+
+def _save_bug_report_configs(options: Options):
+    output_dir = Path(options.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    configs = {
+        "driverName": options.driverName,
+        "packageNames": options.packageNames,
+        "take_screenshots": options.take_screenshots,
+        "pre_failure_screenshots": options.pre_failure_screenshots,
+        "device_output_root": options.device_output_root,
+    }
+    with open(output_dir / "bug_report_config.json", "w", encoding="utf-8") as fp:
+        json.dump(configs, fp, indent=4)
 
 
 @dataclass
