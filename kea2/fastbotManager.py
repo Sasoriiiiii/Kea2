@@ -110,7 +110,8 @@ class FastbotManager:
     def init(self, options: "Options", stamp):
         post_data = {
             "takeScreenshots": options.take_screenshots,
-            "Stamp": stamp,
+            "preFailureScreenshots": options.pre_failure_screenshots,
+            "logStamp": stamp,
             "deviceOutputRoot": options.device_output_root,
         }
         r = _http_request(

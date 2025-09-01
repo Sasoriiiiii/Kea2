@@ -128,6 +128,8 @@ class Options:
     profile_period: int = 25
     # take screenshots for every step
     take_screenshots: bool = False
+    # Screenshots before failure (Dump n screenshots before failure. 0 means take screenshots for every step)
+    pre_failure_screenshots: int = 0
     # The root of output dir on device
     device_output_root: str = "/sdcard"
     # the debug mode
@@ -164,6 +166,9 @@ class Options:
                         f"char: `{char}` is illegal in --log-stamp. current stamp: {self.log_stamp}"
                     )
             STAMP = self.log_stamp
+        
+        if not self.take_screenshots and self.pre_failure_screenshots > 0:
+            raise ValueError("--screenshots-before-error should be 0 when --take-screenshots is not set.")
         
         self.log_stamp = STAMP
             
