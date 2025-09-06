@@ -460,7 +460,7 @@ class BugReportGenerator:
         """
         screenshot_path: Path = self.data_path.screenshots_dir / screenshot_name
         if not screenshot_path.exists():
-            logger.error(f"Screenshot file {screenshot_path} not exists.")
+            logger.debug(f"Screenshot file {screenshot_path} not exists.")
             return False
 
         img = Image.open(screenshot_path).convert("RGB")
@@ -612,6 +612,13 @@ class BugReportGenerator:
             caption = f"{prop_name}: {state}" if prop_name else f"{state}"
 
         screenshot_name = step_data["Screenshot"]
+
+        # Check if the screenshot file actually exists
+        screenshot_file_path = self.data_path.screenshots_dir / screenshot_name
+        if not screenshot_file_path.exists():
+            # Skip adding this screenshot if the file doesn't exist
+            return
+
         # Use relative path string instead of Path object
         relative_screenshot_path = f"output_{self.log_timestamp}/screenshots/{screenshot_name}"
 
@@ -1109,7 +1116,7 @@ class BugReportGenerator:
 if __name__ == "__main__":
     print("Generating bug report")
     # OUTPUT_PATH = "<Your output path>"
-    OUTPUT_PATH = "P:/Python/Kea2/output/res_2025072011_5048015228"
+    OUTPUT_PATH = "P:/Python/Kea2/output/res_2025090122_1216279438"
 
     report_generator = BugReportGenerator()
     report_path = report_generator.generate_report(OUTPUT_PATH)
