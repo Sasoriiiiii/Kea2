@@ -1340,6 +1340,7 @@
 
         <!-- Screenshots Section -->
         {% if take_screenshots %}
+        {% if screenshots %}
         <div class="section-block">
             <h2 class="section-title">Test Screenshots</h2>
             <div class="card">
@@ -1357,6 +1358,14 @@
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="section-block">
+            <h2 class="section-title">Test Screenshots</h2>
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> No screenshots captured in this test session.
+            </div>
+        </div>
+        {% endif %}
         {% endif %}
 
         <!-- Crash Analysis Section -->
