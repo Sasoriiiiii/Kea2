@@ -1,3 +1,4 @@
+import itertools
 from retry import retry
 from retry.api import retry_call
 from dataclasses import asdict
@@ -173,10 +174,8 @@ class FastbotManager:
             "/sdcard/framework.jar:"
             "/sdcard/fastbot-thirdpart.jar:"
             "/sdcard/kea2-thirdpart.jar",
-
             "exec", "app_process",
             "/system/bin", "com.android.commands.monkey.Monkey",
-            "-p", *self.options.packageNames,
             "--agent-u2" if self.options.agent == "u2" else "--agent",
             "reuseq",
             "--running-minutes", f"{self.options.running_mins}",
@@ -184,6 +183,8 @@ class FastbotManager:
             "--bugreport",
             "--output-directory", f"{self.options.device_output_root}/output_{self.options.log_stamp}",
         ]
+        
+        shell_command += list(itertools.chain.from_iterable(["-p", pkg] for pkg in self.options.packageNames))
 
         if self.options.profile_period:
             shell_command += ["--profile-period", f"{self.options.profile_period}"]
