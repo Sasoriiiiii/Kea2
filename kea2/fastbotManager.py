@@ -183,8 +183,9 @@ class FastbotManager:
             "--bugreport",
             "--output-directory", f"{self.options.device_output_root}/output_{self.options.log_stamp}",
         ]
-        
-        shell_command += list(itertools.chain.from_iterable(["-p", pkg] for pkg in self.options.packageNames))
+
+        pkgs = itertools.chain.from_iterable(["-p", pkg] for pkg in self.options.packageNames)
+        shell_command.extend(pkgs)
 
         if self.options.profile_period:
             shell_command += ["--profile-period", f"{self.options.profile_period}"]
