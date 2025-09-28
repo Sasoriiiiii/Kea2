@@ -189,12 +189,13 @@ def _sanitize_args(args):
             args.driver_name = "d"
         else:
             raise ValueError("--driver-name should be specified when customizing script in --agent u2")
+    setattr(args, "unittest_args", []) #Assign the default value prior to other assignments.
     if args.extra:
         args.extra = args.extra[1:] if args.extra[0] == "--" else args.extra
         unittest_index = args.extra.index("unittest") if "unittest" in args.extra else -1
         if unittest_index != -1:
             unittest_args = args.extra[unittest_index+1:]
-            setattr(args, "unittest_args", unittest_args)
+            args.unittest_args = unittest_args
             args.extra = args.extra[:unittest_index]
 
 def run(args=None):
