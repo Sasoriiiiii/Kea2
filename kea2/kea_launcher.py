@@ -184,11 +184,6 @@ def parse_args(argv: List):
 
 
 def _sanitize_args(args):
-    if args.agent == "u2" and not args.driver_name:
-        if args.extra == []:
-            args.driver_name = "d"
-        else:
-            raise ValueError("--driver-name should be specified when customizing script in --agent u2")
     setattr(args, "unittest_args", []) #Assign the default value prior to other assignments.
     if args.extra:
         args.extra = args.extra[1:] if args.extra[0] == "--" else args.extra
