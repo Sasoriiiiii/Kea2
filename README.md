@@ -242,7 +242,7 @@ You can run this example by using the similar command line in Feature 2.
 
 Kea2 automatically generates comprehensive HTML test reports after each testing session.(The location is in the output/ directory)
 
-If automatic generation fails, you can also manually generate the test report using the command "kea2 report -p 'output path'"
+If automatic generation fails, you can also manually generate the test report using the command "kea2 report -p 'the path to the folder containing the test data'"
 
 The reports support both single test runs and merged analysis of multiple test sessions, making it easy to track testing progress and identify issues.
 
