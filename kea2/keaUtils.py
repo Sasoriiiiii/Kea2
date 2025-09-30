@@ -182,6 +182,9 @@ class Options:
         if self.throttle < 0:
             raise ValueError("--throttle should be greater than or equal to 0")
 
+        if self.agent == 'u2' and self.driverName == None:
+            raise ValueError("--driver-name should be specified when customizing script in --agent u2")
+        
         _check_package_installation(self.packageNames)
 
 
