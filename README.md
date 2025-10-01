@@ -63,6 +63,10 @@ Kea2 (and its idea) has been used/integrated by
 
 - [WeChat's iExplorer]() --- WeChat's in-house testing platform
 
+- [WeChat Payment's UAT]() --- WeChat Payment's in-house testing platform
+
+- [DevEco Testing](https://developer.huawei.com/consumer/cn/deveco-testing/) --- Huawei's Official Testing Platform for HarmonyOS 
+
 - [ByteDance's Fastbot](https://github.com/bytedance/Fastbot_Android)
 
 Please let us know and willing to hear your feedback/questions if you are also using Kea2.
