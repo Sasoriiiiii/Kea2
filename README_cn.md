@@ -7,7 +7,7 @@
     <img src="https://github.com/user-attachments/assets/84e47b87-2dd2-4d7e-91d1-e8c1d1db0cf4" style="border-radius: 14px; width: 20%; height: 20%;"/> 
 </div>
 
-该群已满。请联系Xixian Liang，邮箱 [xixian@stu.ecnu.edu.cn](xixian@stu.ecnu.edu.cn)，并提供你的微信ID或二维码以便邀请加入微信群。
+该群已满员。如需加入微信群，请联系Xixian Liang，邮箱：[xixian@stu.ecnu.edu.cn](xixian@stu.ecnu.edu.cn)，并附上你的微信ID或二维码。
 
 ### Github仓库链接
 [https://github.com/ecnusse/Kea2](https://github.com/ecnusse/Kea2)
@@ -56,13 +56,13 @@ Kea2目前基于[Fastbot](https://github.com/bytedance/Fastbot_Android)（*一�
 
 Kea2（及其理念）已被以下项目使用/集成：
 
-- [OPay Business](https://play.google.com/store/apps/details?id=team.opay.pay.merchant.service) — 一款金融支付应用。OPay使用Kea2对POS机及移动设备进行回归测试。
+- [OPay Business](https://play.google.com/store/apps/details?id=team.opay.pay.merchant.service) --- 一款金融支付应用。OPay使用Kea2对POS机和移动设备进行回归测试。
 
-- [微信iExplorer]() — 微信内部测试平台
+- [微信iExplorer]() --- 微信内部测试平台
 
 - [字节跳动Fastbot](https://github.com/bytedance/Fastbot_Android)
 
-如果你也在使用Kea2，欢迎联系我们并提供反馈或提问。
+如果你也在使用Kea2，欢迎联系我们并反馈你的意见和问题。
 
 ## 设计与展望
 
@@ -93,11 +93,11 @@ python3 -m pip install kea2-python
 kea2 -h
 ```
 
-如果之前已安装Kea2，可升级到最新版本：
+如果之前已安装Kea2，可升级至最新版本：
 ```bash
 python3 -m pip install -U kea2-python
 ```
-> 如果你使用清华、USTC等镜像站点，升级可能失败，因为这些站点可能尚未同步最新版本。此时，你可以尝试手动指定最新版本安装，或直接使用官方PyPI源：`pip install kea2-python -i https://pypi.org/simple`。
+> 如果你使用清华或中科大镜像，可能升级失败，因为镜像未同步最新版本。此时可尝试手动指定版本安装，或直接使用官方PyPI源：`pip install kea2-python -i https://pypi.org/simple`。
 
 升级到指定版本（例如0.3.6）：
 ```bash
@@ -230,7 +230,7 @@ Kea2支持在运行Fastbot时自动断言，用以发现*逻辑错误*（即*非
 
 Kea2会在每次测试结束后自动生成详尽的HTML测试报告。
 
-报告支持单次测试和多次测试合并分析，方便跟踪测试进度和定位问题。
+报告支持单次测试运行及多次测试结果的合并分析，方便跟踪测试进度和定位问题。
 
 - [查看详细测试报告文档](docs/test_report_introduction.md)
 
@@ -242,16 +242,16 @@ Kea2会在每次测试结束后自动生成详尽的HTML测试报告。
 - 如何运行Kea2及命令行选项；
 - 如何发现并理解Kea2的测试结果；
 - 如何在模糊测试过程中将特定Activity、UI控件和UI区域加入[白名单或黑名单](docs/blacklisting.md)；
-- [Kea2和基于性质测试（PBT）的常见问题与解答](https://sy8pzmhmun.feishu.cn/wiki/SLGwwqgzIiEuC3kwmV8cSZY0nTg?from=from_copylink)；
+- [Kea2和基于性质测试（PBT）的常见问题与回答](https://sy8pzmhmun.feishu.cn/wiki/SLGwwqgzIiEuC3kwmV8cSZY0nTg?from=from_copylink)；
 - [Kea2 101（Kea2从0到1的入门教程与最佳实践，建议新手阅读）](https://sy8pzmhmun.feishu.cn/wiki/EwaWwPCitiUJoBkIgALcHtglnDK?from=from_copylink)；
 - [Kea2分享交流会（2025.09，bilibili录播）](https://www.bilibili.com/video/BV1CZYNz9Ei5/?vd_source=ab7968b8d764666d85d24af49d9b8891)。
 
-部分关于Kea/Kea2的博客（中文）：
+部分Kea/Kea2相关博客（中文）：
 - [别再苦哈哈写测试脚本了，生成它们吧！(一)](https://mp.weixin.qq.com/s/R2kLCkXpDjpa8wCX4Eidtg)
 - [别再苦哈哈写测试脚本了，生成它们吧！(二)](https://mp.weixin.qq.com/s/s4WkdstNcKupu9OP8jeOXw)
 - [别再苦哈哈写测试脚本了，生成它们吧！(三)](https://mp.weixin.qq.com/s/BjXyo-xJRmPB_sCc4pmh8g)
 - [2025 Let’s GoSSIP 软件安全暑期学校预告第一弹——Kea2](https://mp.weixin.qq.com/s/8_0_GNNin8E5BqTbJU33wg)
-- [功能性质驱动的测试技术：下一代GUI自动化测试技术](https://appw8oh6ysg4044.xet.citv.cn/p/course/video/v_6882fa14e4b0694ca0ec0a1b) — 视频回放&PPT@MTSC 2025
+- [功能性质驱动的测试技术：下一代GUI自动化测试技术](https://appw8oh6ysg4044.xet.citv.cn/p/course/video/v_6882fa14e4b0694ca0ec0a1b) --- 视频回放&PPT@MTSC 2025
 
 工业界对Kea2的理解和评价（点击箭头查看详情）：
 
@@ -326,6 +326,10 @@ Kea2由[ecnusse](https://github.com/ecnusse)团队积极开发与维护：
 [Zhendong Su](https://people.inf.ethz.ch/suz/), [Yiheng Xiong](https://xyiheng.github.io/), [Xiangchen Shen](https://xiangchenshen.github.io/), [Mengqian Xu](https://mengqianx.github.io/), [Haiying Sun](https://faculty.ecnu.edu.cn/_s43/shy/main.psp), [Jingling Sun](https://jinglingsun.github.io/), [Jue Wang](https://cv.juewang.info/), [Geguang Pu]()也积极参与并对项目贡献良多！
 
 Kea2还获得京东等多位工业界专家的宝贵建议和经验分享，感谢字节跳动（[Zhao Zhang](https://github.com/zhangzhao4444)、Fastbot团队的Yuhui Su）、OPay（Tiesong Liu）、微信（Haochuan Lu，Yuetang Deng）、华为、小米等多方支持，致敬！
+
+### Star历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ecnusse/Kea2&type=Date)](https://www.star-history.com/#ecnusse/Kea2&Date)
 
 [^1]: 不少UI自动化测试工具提供了“自定义事件序列”能力（如[Fastbot](https://github.com/bytedance/Fastbot_Android/blob/main/handbook-cn.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BA%8B%E4%BB%B6%E5%BA%8F%E5%88%97) 和[AppCrawler](https://github.com/seveniruby/AppCrawler)），但在实际使用中存在不少问题，如自定义能力有限、使用不灵活等。此前不少Fastbot用户抱怨过其“自定义事件序列”在使用中的问题，如[#209](https://github.com/bytedance/Fastbot_Android/issues/209), [#225](https://github.com/bytedance/Fastbot_Android/issues/225), [#286](https://github.com/bytedance/Fastbot_Android/issues/286)等。
 
