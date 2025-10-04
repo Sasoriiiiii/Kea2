@@ -24,19 +24,19 @@ body:
     validations:
       required: true
 
-  - type: textarea
+  - type: input
     attributes:
       label: '📱 Android Version'
       description: 'Please provide the Android version number (e.g., Android 12)'
     validations:
       required: true
 
-  - type: textarea
+  - type: input
     attributes:
       label: '📲 Device Model'
       description: 'Please describe your device model (e.g., Xiaomi 15, Nexus 5X, Honor V20, etc.)'
 
-  - type: textarea
+  - type: input
     attributes:
       label: '🐍 Python Version'
       description: 'Please provide your Python version information (result of python --version)'
