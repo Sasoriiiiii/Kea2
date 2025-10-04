@@ -10,12 +10,14 @@ import argparse
 import os
 from pathlib import Path
 
+from importlib.metadata import version
+import json
+
 
 logger = getLogger(__name__)
 
 
 def cmd_version(args):
-    from importlib.metadata import version
     print(version("Kea2-python"), flush=True)
 
 
@@ -121,11 +123,68 @@ def cmd_merge(args):
         logger.error(f"Error during merge operation: {e}")
 
 
+def find_new_config_files(src_dir, dst_dir):
+    src_path = Path(src_dir)
+    dst_path = Path(dst_dir)
+    
+    if not src_path.exists():
+        return []
+    
+    src_files = {f.relative_to(src_path) for f in src_path.rglob('*') if f.is_file()}
+    dst_files = {f.relative_to(dst_path) for f in dst_path.rglob('*') if f.is_file()} if dst_path.exists() else set()
+    
+    new_files = [str(file_rel) for file_rel in src_files if file_rel not in dst_files]
+    
+    return new_files
+
+def create_verison_info(version_file, version):
+    version_info = {
+        "version": version
+    }
+    with open(version_file, 'w', encoding='utf-8') as f:
+        json.dump(version_info, f, indent=2, ensure_ascii=False)
+
+def is_config_update_required(args) :
+    base_dir = getProjectRoot()
+    configs_dir = base_dir / "configs"
+    version_file = configs_dir / "version.json"
+    
+    config_change = "0.3.6"
+    version_cur = version("Kea2-python")
+    version_config = "0.3.6"
+    if not version_file.exists():
+        version_config = "0.3.6"
+        create_verison_info(version_file, version_config)
+    else:
+        with open(version_file, 'r', encoding='utf-8') as f:
+            version_info = json.load(f)
+        version_config = (version_info.get("version") or "0.3.6")
+    if version_cur != version_config and version_config < config_change:
+        logger.error(
+            f"Configuration update required!\n"
+            f"Current Kea2 version: {version_cur}\n"
+            f"Configs version: {version_config}\n"
+            f"Configurations were updated in version {config_change}\n"
+            f"Please update your configuration files."
+        )
+        src = Path(__file__).parent / "assets" / "fastbot_configs"
+        new_files = find_new_config_files(src, configs_dir)
+        if new_files:
+            print("\n🆕 List of newly added files:")
+            for i, file_path in enumerate(new_files, 1):
+                print(f"   {i:2d}. {file_path}")
+    else:
+        print(f"The configuration file does not need to be updated.\n")
+        
+        
+
+
 def cmd_run(args):
     base_dir = getProjectRoot()
     if base_dir is None:
         logger.error("kea2 project not initialized. Use `kea2 init`.")
         return
+    is_config_update_required()
     run(args)
 
 
@@ -171,6 +230,11 @@ _commands = [
                 help="Output directory for merged report (optional)"
             )
         ]
+    ),
+    dict(
+        action=is_config_update_required,
+        command="check-config",
+        help="check if configuration files need to be updated"
     )
 ]
 
