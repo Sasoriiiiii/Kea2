@@ -6,19 +6,43 @@ type: Bug
 body:
   - type: input
     attributes:
-      label: '📌 Version'
+      label: '📌 Kea2's Version'
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: '💻 Operating System'
+      multiple: true
+      options:
+        - 'Windows'
+        - 'macOS'
+        - 'Linux'
+        - 'Other'
     validations:
       required: true
   - type: textarea
     attributes:
+      label: '📱 Android Version'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: '📲 Device Model'
+      description: e.g., Xiaomi 15, Nexus 5X, Honor V20, etc.
+  - type: textarea
+    attributes:
+      label: '🐍 Python Version'
+      description: result of `python --version`
+  - type: textarea
+    attributes:
       label: '🐛 Bug Description'
-      description: A clear and concise description of the bug, if the above option is `Other`, please also explain in detail.
+      description: A clear and concise description of the bug. If applicable, add screenshots to help explain your problem..
     validations:
       required: true
   - type: textarea
     attributes:
       label: '📷 Recurrence Steps'
-      description: A clear and concise description of how to recurrence.
+      description: A clear and concise description of how to recurrence. If applicable, add screenshots to help explain your problem.
   - type: textarea
     attributes:
       label: '🚦 Expected Behavior'
