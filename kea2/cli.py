@@ -137,9 +137,11 @@ def find_new_config_files(src_dir, dst_dir):
     
     return new_files
 
-def create_verison_info(version_file, version):
+def create_verison_info(version_file, version, min_version, max_version):
     version_info = {
-        "version": version
+        "version": version,
+        "min_version": min_version,
+        "max_version": max_version
     }
     with open(version_file, 'w', encoding='utf-8') as f:
         json.dump(version_info, f, indent=2, ensure_ascii=False)
@@ -149,22 +151,39 @@ def is_config_update_required(args) :
     configs_dir = base_dir / "configs"
     version_file = configs_dir / "version.json"
     
-    config_change = "0.3.6"
-    version_cur = version("Kea2-python")
     version_config = "0.3.6"
+    min_version = "0.3.6"
+    max_version = "0.3.6"
+    version_cur = version("Kea2-python")
     if not version_file.exists():
-        version_config = "0.3.6"
-        create_verison_info(version_file, version_config)
+        create_verison_info(version_file, version_config, min_version, max_version)
     else:
         with open(version_file, 'r', encoding='utf-8') as f:
             version_info = json.load(f)
         version_config = (version_info.get("version") or "0.3.6")
-    if version_cur != version_config and version_config < config_change:
+        min_version = (version_info.get("min_version") or "0.3.6")
+        max_version = (version_info.get("max_version") or "100.0.0")
+    
+    def version_to_tuple(version_str):
+            return tuple(map(int, version_str.split('.')))
+    min_version_tuple = version_to_tuple(min_version)
+    max_version_tuple = version_to_tuple(max_version)
+    version_cur_tuple = version_to_tuple(version_cur)
+    
+    def compare_versions(v1, v2):        
+        if v1 < v2:
+            return -1
+        elif v1 > v2:
+            return 1
+        else:
+            return 0
+    
+    if (compare_versions(version_cur_tuple, min_version_tuple) == -1) or (compare_versions(version_cur_tuple,max_version_tuple)==1):
         logger.error(
             f"Configuration update required!\n"
             f"Current Kea2 version: {version_cur}\n"
             f"Configs version: {version_config}\n"
-            f"Configurations were updated in version {config_change}\n"
+            f"The currently applicable version range for the configuration file is from {min_version} to {max_version}.\n"
             f"Please update your configuration files."
         )
         src = Path(__file__).parent / "assets" / "fastbot_configs"
