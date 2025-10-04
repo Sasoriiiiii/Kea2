@@ -7,7 +7,7 @@ body:
   - type: input
     attributes:
       label: '📌 Kea2 Version'
-      description: 'Please provide the specific version number of Kea2 (e.g., v1.2.3)'
+      description: 'Please provide the specific version number of Kea2 (result of `kea2 version`)'
     validations:
       required: true
 
@@ -39,7 +39,7 @@ body:
   - type: input
     attributes:
       label: '🐍 Python Version'
-      description: 'Please provide your Python version information (result of python --version)'
+      description: 'Please provide your Python version information (result of `python --version`)'
 
   - type: textarea
     attributes:
