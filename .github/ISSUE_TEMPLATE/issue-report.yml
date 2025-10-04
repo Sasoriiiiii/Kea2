@@ -6,12 +6,15 @@ type: Bug
 body:
   - type: input
     attributes:
-      label: '📌 Kea2's Version'
+      label: '📌 Kea2\'s Version'
+      description: 'Please provide the specific version number of Kea2 (e.g., v1.2.3)'
     validations:
       required: true
+
   - type: dropdown
     attributes:
       label: '💻 Operating System'
+      description: 'Select your operating system (multiple options allowed)'
       multiple: true
       options:
         - 'Windows'
@@ -20,34 +23,42 @@ body:
         - 'Other'
     validations:
       required: true
+
   - type: textarea
     attributes:
       label: '📱 Android Version'
+      description: 'Please provide the Android version number (e.g., Android 12)'
     validations:
       required: true
+
   - type: textarea
     attributes:
       label: '📲 Device Model'
-      description: e.g., Xiaomi 15, Nexus 5X, Honor V20, etc.
+      description: 'Please describe your device model (e.g., Xiaomi 15, Nexus 5X, Honor V20, etc.)'
+
   - type: textarea
     attributes:
       label: '🐍 Python Version'
-      description: result of `python --version`
+      description: 'Please provide your Python version information (result of `python --version`)'
+
   - type: textarea
     attributes:
       label: '🐛 Bug Description'
-      description: A clear and concise description of the bug. If applicable, add screenshots to help explain your problem..
+      description: 'Describe the bug you encountered in detail. Add screenshots if applicable'
     validations:
       required: true
+
   - type: textarea
     attributes:
       label: '📷 Recurrence Steps'
-      description: A clear and concise description of how to recurrence. If applicable, add screenshots to help explain your problem.
+      description: 'Describe the exact steps to reproduce the issue. Add screenshots if applicable'
+
   - type: textarea
     attributes:
       label: '🚦 Expected Behavior'
-      description: A clear and concise description of what you expected to happen.
+      description: 'Describe what behavior or result you expected'
+
   - type: textarea
     attributes:
       label: '📝 Additional Information'
-      description: If your problem needs further explanation, or if the issue you're seeing cannot be reproduced in a gist, please add more information here.
+      description: 'If you need further explanation or the issue cannot be reproduced through code, please provide more details'
