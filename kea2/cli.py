@@ -5,13 +5,13 @@ from __future__ import absolute_import, print_function
 import sys
 from .utils import getProjectRoot, getLogger
 from .kea_launcher import run
+from .version_manager import sanitize_version
 import argparse
 
 import os
 from pathlib import Path
 
 from importlib.metadata import version
-import json
 
 
 logger = getLogger(__name__)
@@ -120,82 +120,7 @@ def cmd_merge(args):
         print(f"📈 Merged {merge_summary.get('merged_directories', 0)} directories", flush=True)
 
     except Exception as e:
-        logger.error(f"Error during merge operation: {e}")
-
-
-def find_new_config_files(src_dir, dst_dir):
-    src_path = Path(src_dir)
-    dst_path = Path(dst_dir)
-    
-    if not src_path.exists():
-        return []
-    
-    src_files = {f.relative_to(src_path) for f in src_path.rglob('*') if f.is_file()}
-    dst_files = {f.relative_to(dst_path) for f in dst_path.rglob('*') if f.is_file()} if dst_path.exists() else set()
-    
-    new_files = [str(file_rel) for file_rel in src_files if file_rel not in dst_files]
-    
-    return new_files
-
-def create_verison_info(version_file, version, min_version, max_version):
-    version_info = {
-        "version": version,
-        "min_version": min_version,
-        "max_version": max_version
-    }
-    with open(version_file, 'w', encoding='utf-8') as f:
-        json.dump(version_info, f, indent=2, ensure_ascii=False)
-
-def is_config_update_required(args) :
-    base_dir = getProjectRoot()
-    configs_dir = base_dir / "configs"
-    version_file = configs_dir / "version.json"
-    
-    version_config = "0.3.6"
-    min_version = "0.3.6"
-    max_version = "0.3.6"
-    version_cur = version("Kea2-python")
-    if not version_file.exists():
-        create_verison_info(version_file, version_config, min_version, max_version)
-    else:
-        with open(version_file, 'r', encoding='utf-8') as f:
-            version_info = json.load(f)
-        version_config = (version_info.get("version") or "0.3.6")
-        min_version = (version_info.get("min_version") or "0.3.6")
-        max_version = (version_info.get("max_version") or "100.0.0")
-    
-    def version_to_tuple(version_str):
-            return tuple(map(int, version_str.split('.')))
-    min_version_tuple = version_to_tuple(min_version)
-    max_version_tuple = version_to_tuple(max_version)
-    version_cur_tuple = version_to_tuple(version_cur)
-    
-    def compare_versions(v1, v2):        
-        if v1 < v2:
-            return -1
-        elif v1 > v2:
-            return 1
-        else:
-            return 0
-    
-    if (compare_versions(version_cur_tuple, min_version_tuple) == -1) or (compare_versions(version_cur_tuple,max_version_tuple)==1):
-        logger.error(
-            f"Configuration update required!\n"
-            f"Current Kea2 version: {version_cur}\n"
-            f"Configs version: {version_config}\n"
-            f"The currently applicable version range for the configuration file is from {min_version} to {max_version}.\n"
-            f"Please update your configuration files."
-        )
-        src = Path(__file__).parent / "assets" / "fastbot_configs"
-        new_files = find_new_config_files(src, configs_dir)
-        if new_files:
-            print("\n🆕 List of newly added files:")
-            for i, file_path in enumerate(new_files, 1):
-                print(f"   {i:2d}. {file_path}")
-    else:
-        print(f"The configuration file does not need to be updated.\n")
-        
-        
+        logger.error(f"Error during merge operation: {e}")      
 
 
 def cmd_run(args):
@@ -203,7 +128,7 @@ def cmd_run(args):
     if base_dir is None:
         logger.error("kea2 project not initialized. Use `kea2 init`.")
         return
-    is_config_update_required()
+    # sanitize_version()
     run(args)
 
 
