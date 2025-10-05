@@ -1,5 +1,17 @@
 {
-  "version": "0.3.6",
-  "min_version": "0.3.6",
-  "max_version": ""
+  "config_version": "0.3.6",
+  "config_version_ranges": [
+    {
+      "name": "range1",
+      "description": "初始版本配置格式",
+      "min_version": "0.0.0",
+      "max_version": "0.3.5"
+    },
+    {
+      "name": "range2",
+      "description": "当前配置格式",
+      "min_version": "0.3.6",
+      "max_version": "0.4.0"
+    }
+  ]
 }

@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function
 import sys
 from .utils import getProjectRoot, getLogger
 from .kea_launcher import run
-from .version_manager import sanitize_version
+from .version_manager import SanitizeConfigVersion
 import argparse
 
 import os
@@ -128,7 +128,11 @@ def cmd_run(args):
     if base_dir is None:
         logger.error("kea2 project not initialized. Use `kea2 init`.")
         return
-    # sanitize_version()
+    
+    project_config_path = Path(__file__).parent / "assets" / "fastbot_configs"
+    user_config_path = base_dir/"configs"
+    SanitizeConfigVersion(project_config_path, user_config_path).check_config_compatibility()
+    
     run(args)
 
 
@@ -174,11 +178,6 @@ _commands = [
                 help="Output directory for merged report (optional)"
             )
         ]
-    ),
-    dict(
-        action=is_config_update_required,
-        command="check-config",
-        help="check if configuration files need to be updated"
     )
 ]
 
