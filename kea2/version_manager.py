@@ -44,7 +44,7 @@ class ConfigVersionSanitizer:
         self._config_version = None
         self.user_config_path = getProjectRoot() / "configs"
         self.kea2_assets_path = Path(__file__).parent / "assets"
-        self.kea2_version = version("Kea2-python")
+        self.kea2_version = get_cur_version()
 
     @property
     def version_infos(self) -> VersionInfo:
@@ -68,21 +68,20 @@ class ConfigVersionSanitizer:
 
     def check_config_compatibility(self):
         """Check if the user config version is compatible with the current Kea2 version.""" 
+        update_infos = []
         for info in self.version_infos["compatibility infos"]:
-            if Version(info["from"]) <= Version(self.config_version) <= Version(info["to"]):
-                logger.debug(
-                    f"Config version: {self.config_version} is compatible with "
-                    f"kea2 version: {self.kea2_version}"
-                )
-                return
-            else:
-                logger.error(
-                    f"Configuration update required!\n"
-                    f"Current Kea2 version: {self.kea2_version}\n"
-                    f"Configs version: {self.config_version}\n"
-                    f"The currently applicable version range for the configuration file is from {info['from']} to {info['to']}.\n"
-                    f"Please update your configuration files."
-                )
+            if Version(info["from"]) > Version(self.config_version):
+                update_infos.append(info)
+
+        if not update_infos:
+            return
+
+        logger.warning("Configuration update required! Please update your configuration files.")
+        logger.warning(f"Current kea2 version {self.kea2_version}. Current config version {self.config_version}.")
+        for info in update_infos:
+            logger.info(
+                f"Since version {info['from']}: {info['description']}"
+            )
     
     def config_auto_update(self):
         self._copy_new_configs()
