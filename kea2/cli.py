@@ -2,23 +2,22 @@
 # cli.py
 
 from __future__ import absolute_import, print_function
+from datetime import datetime
 import sys
 from .utils import getProjectRoot, getLogger
 from .kea_launcher import run
-from .version_manager import SanitizeConfigVersion
+from .version_manager import check_config_compatibility, get_cur_version
 import argparse
 
 import os
 from pathlib import Path
-
-from importlib.metadata import version
 
 
 logger = getLogger(__name__)
 
 
 def cmd_version(args):
-    print(version("Kea2-python"), flush=True)
+    print(get_cur_version(), flush=True)
 
 
 def cmd_init(args):
@@ -38,9 +37,16 @@ def cmd_init(args):
         src = Path(__file__).parent / "assets" / "quicktest.py"
         dst = cwd / "quicktest.py"
         shutil.copyfile(src, dst)
+    
+    def save_version():
+        import json
+        version_file = configs_dir / "version.json"
+        with open(version_file, "w") as fp:
+            json.dump({"version": get_cur_version(), "init date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}, fp, indent=4)
 
     copy_configs()
     copy_samples()
+    save_version()
     logger.info("Kea2 project initialized.")
 
 
@@ -128,11 +134,9 @@ def cmd_run(args):
     if base_dir is None:
         logger.error("kea2 project not initialized. Use `kea2 init`.")
         return
-    
-    project_config_path = Path(__file__).parent / "assets" / "fastbot_configs"
-    user_config_path = base_dir/"configs"
-    SanitizeConfigVersion(project_config_path, user_config_path).check_config_compatibility()
-    
+
+    check_config_compatibility()
+
     run(args)
 
 

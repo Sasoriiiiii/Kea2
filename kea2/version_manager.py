@@ -1,8 +1,9 @@
 import json
+import os
 from pathlib import Path
 from packaging.version import Version
 from .utils import getLogger, getProjectRoot
-from typing import List, Optional
+from typing import List, Set, TypedDict
 import shutil
 from importlib.metadata import version
 from dataclasses import dataclass
@@ -10,108 +11,93 @@ from dataclasses import dataclass
 
 logger = getLogger(__name__)
 
-@dataclass
-class ConfigVersionRange:
-    name: str
-    description: str
-    min_version: str
-    max_version: str
 
-    def contains(self, ver: str) -> bool:
-        return Version(self.min_version) <= Version(ver) <= Version(self.max_version)
+CompatibilityInfo = TypedDict('CompatibilityInfo', {
+    "name": str,
+    "description": str,
+    "from": str,
+    "to": str,
+})
+VersionInfo = TypedDict('VersionInfo', {
+    "compatibility infos": List[CompatibilityInfo],
+})
 
 
-def find_new_config_files(src_dir, dst_dir):
-    """将src_dir中新增文件添加到dst_dir中"""
-    src_path = Path(src_dir)
-    dst_path = Path(dst_dir)
-    
-    if not src_path.exists():
-        return []
-    
-    src_files = {f.relative_to(src_path) for f in src_path.rglob('*') if f.is_file()}
-    dst_files = {f.relative_to(dst_path) for f in dst_path.rglob('*') if f.is_file()} if dst_path.exists() else set()
-    
-    files_to_copy  = [file_rel for file_rel in src_files if file_rel not in dst_files]
-    
-    copied_files = []
-    for file_rel in files_to_copy:
-        src_file = src_path / file_rel
-        dst_file = dst_path / file_rel
-        
-        try:
-            dst_file.parent.mkdir(parents=True, exist_ok=True)
-            
-            shutil.copy2(src_file, dst_file)
-            copied_files.append(str(file_rel))
-            
-            logger.info(f"新增配置文件: {file_rel}")
-            
-        except Exception as e:
-            logger.error(f"新增配置文件失败 {file_rel}: {e}")
-    logger.info(f"总共新增了 {len(copied_files)} 个文件")
-    
-    return copied_files
+def ls_files(dir_path: Path) -> Set[Path]:
+    """list all files in the directory"""
+    return set(f for f in dir_path.rglob('*') if f.is_file())
 
-class SanitizeConfigVersion :
-    def __init__(self, project_config_path:str, user_config_path:str):
-        """
-        初始化
-        
-        Args:
-            project_config_path: 项目配置文件路径
-            user_config_path: 用户配置文件路径
-            config_version: 用户配置文件版本
-            project_version: 项目版本
-            config_version_ranges: 适用的配置文件版本区间
-        """
-        self.project_config_path = project_config_path
-        self.user_config_path = user_config_path
-        self.project_version = version("Kea2-python")
-        self.config_version=""
-        self.config_version_ranges: List[ConfigVersionRange] = []
-        self._load_config()
-        
-    
-    def _load_config(self) ->None:
-        """从JSON文件中加载版本区间与用户配置文件版本"""
-        
-        if (self.user_config_path/"version.json").exists():
-            with open(self.user_config_path/"version.json", 'r', encoding='utf-8') as f:
-                user_config_data = json.load(f)
-            self.config_version = user_config_data.get("config_version")
+
+def check_config_compatibility():
+    config_version_sanitizer = ConfigVersionSanitizer()
+    config_version_sanitizer.check_config_compatibility()
+    config_version_sanitizer.config_auto_update()
+
+
+def get_cur_version():
+    return version("Kea2-python")
+
+
+class ConfigVersionSanitizer:
+    def __init__(self):
+        self._version_infos = None
+        self._config_version = None
+        self.user_config_path = getProjectRoot() / "configs"
+        self.kea2_assets_path = Path(__file__).parent / "assets"
+        self.kea2_version = version("Kea2-python")
+
+    @property
+    def version_infos(self) -> VersionInfo:
+        if self._version_infos is None:
+            with open(self.kea2_assets_path / "config_version.json") as fp:
+                self._version_infos = json.load(fp)
+        return self._version_infos
+
+    @property
+    def config_version(self):
+        if self._config_version is not None:
+            return self._config_version
+
+        user_version_json = self.user_config_path / "version.json"
+        if not user_version_json.exists():
+            self._config_version = "0.3.6"
         else:
-            self.config_version = "0.3.5"
-            
-        with open(self.project_config_path/"version.json", 'r', encoding='utf-8') as f:
-            project_config_data = json.load(f)
-        
-        for range_data in project_config_data.get("config_version_ranges",[]):
-            version_range = ConfigVersionRange(
-                name=range_data['name'],
-                description=range_data['description'],
-                min_version=range_data['min_version'],
-                max_version=range_data['max_version'],
-            )
-            self.config_version_ranges.append(version_range)
-            
-    def get_current_version_range(self) -> Optional[ConfigVersionRange]:
-        """获取当前软件版本适用的版本区间"""
-        for version_range in self.config_version_ranges:
-            if version_range.contains(self.project_version):
-                return version_range
-        return None
-    
+            with open(user_version_json) as fp:
+                self._config_version = json.load(fp)["version"]
+        return self._config_version
+
     def check_config_compatibility(self):
-        """检测用户配置文件版本是否在适配的区间中"""
-        accept_range = self.get_current_version_range()
-        if Version(accept_range.min_version) <= Version(self.config_version) <= Version(accept_range.max_version):
-            return
-        logger.error(
-            f"Configuration update required!\n"
-            f"Current Kea2 version: {self.project_version}\n"
-            f"Configs version: {self.config_version}\n"
-            f"The currently applicable version range for the configuration file is from {accept_range.min_version} to {accept_range.max_version}.\n"
-            f"Please update your configuration files."
-        )
-        find_new_config_files(self.project_config_path, self.user_config_path)
+        """Check if the user config version is compatible with the current Kea2 version.""" 
+        for info in self.version_infos["compatibility infos"]:
+            if Version(info["from"]) <= Version(self.config_version) <= Version(info["to"]):
+                logger.debug(
+                    f"Config version: {self.config_version} is compatible with "
+                    f"kea2 version: {self.kea2_version}"
+                )
+                return
+            else:
+                logger.error(
+                    f"Configuration update required!\n"
+                    f"Current Kea2 version: {self.kea2_version}\n"
+                    f"Configs version: {self.config_version}\n"
+                    f"The currently applicable version range for the configuration file is from {info['from']} to {info['to']}.\n"
+                    f"Please update your configuration files."
+                )
+    
+    def config_auto_update(self):
+        self._copy_new_configs()
+    
+    def _copy_new_configs(self):
+        src = self.kea2_assets_path / "fastbot_configs"
+        dst = self.user_config_path
+        
+        src_files = set(os.listdir(src))
+        dst_files = set(os.listdir(dst))
+        
+        new_files = src_files - dst_files
+        
+        for file in new_files:
+            src_path = src / file
+            dst_path = dst / file
+            logger.info(f"Copying new config file: {file}")
+            shutil.copy2(src_path, dst_path)
