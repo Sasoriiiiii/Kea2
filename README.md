@@ -111,14 +111,7 @@ Upgrade Kea2 to the specifc latest version (e.g., 0.3.6) if you already installe
 python3 -m pip install -U kea2-python==0.3.6
 ```
 
-## Update of User Configuration Files
-When updating the configuration files for Kea2, the user's local configuration files also need to be updated.
 
-+ The user configuration files are located under the "Project Root Directory/configs". Users can modify the configuration files according to their needs. Among them, "Project Root Directory/configs/version.json" stores the version information of the configuration files.
-
-+ The project configuration files are located under "local directory where kea2 is located/kea2/assets/fastbot_configs". When Kea2 is updated, the project configuration files may also be updated. New files will be automatically added to the user configuration files when running "kea2 run", but other configurations require manual updates by the user.
-
-After updating the user configuration files, please update the version information in "Project Root Directory/configs/version.json" so that we can check whether your local configuration files are outdated.
 
 
 ## Quick Test

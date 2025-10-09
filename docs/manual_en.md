@@ -341,6 +341,15 @@ error | How many times does the test method abort during UI tsting due to some u
 After executing `Kea2 init`, some configuration files will be generated in the `configs` directory. 
 These configuration files belong to `Fastbot`, and their specific introductions are provided in [Introduction to configuration files](https://github.com/bytedance/Fastbot_Android/blob/main/handbook-cn.md#%E4%B8%93%E5%AE%B6%E7%B3%BB%E7%BB%9F).
 
+## Update of User Configuration Files
+When updating the configuration files for Kea2, the user's local configuration files also need to be updated.
+
++ The user configuration files are located under the "Project Root Directory/configs". Users can modify the configuration files according to their needs. Among them, "Project Root Directory/configs/version.json" stores the version information of the configuration files.
+
++ The project configuration files are located under "local directory where kea2 is located/kea2/assets/config_version.json". When Kea2 is updated, the project configuration files may also be updated. New files will be automatically added to the user configuration files when running "kea2 run", but other configurations require manual updates by the user.
+
+After updating the user configuration files, please update the version information in "Project Root Directory/configs/version.json" so that we can check whether your local configuration files are outdated.
+
 ## App's Crash Bugs
 Kea2 dumps the triggered crash bugs in the `fastbot_*.log` generated in the output directory specified by `-o`. You can search the keyword `FATAL EXCEPTION` in `fastbot_*.log` to find the concrete information of crash bugs.
 

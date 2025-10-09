@@ -108,15 +108,7 @@ python3 -m pip install -U kea2-python
 python3 -m pip install -U kea2-python==0.3.6
 ```
 
-## 用户配置文件的更新
 
-Kea2更新配置文件时，用户本地配置文件也需要更新。
-
-+ 用户配置文件在"项目根目录/configs"下，用户可根据自己的需求更改配置文件，其中"项目根目录/configs/version.json"存储配置文件版本信息。
-
-+ 项目配置文件在"本地kea2所在目录/kea2/assets/fastbot_configs"下，Kea2更新时可能会更新项目配置文件，新增文件会在kea2 run时自行添加到用户配置文件中，但其他配置需要用户手动更新。
-
-更新用户配置文件后，请更新"项目根目录/configs/version.json"中的版本信息，以便我们查询您的本地配置文件是否过时。
 
 ## 快速测试
 

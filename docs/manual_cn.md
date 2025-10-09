@@ -332,6 +332,16 @@ error | UI 测试中，测试方法因发生意外错误（如找不到某些 UI
 执行 `Kea2 init` 后，会在 `configs` 目录生成一些配置文件。
 这些配置文件属于 `Fastbot`，具体介绍请参见 [配置文件介绍](https://github.com/bytedance/Fastbot_Android/blob/main/handbook-cn.md#%E4%B8%93%E5%AE%B6%E7%B3%BB%E7%BB%9F)。
 
+## 用户配置文件的更新
+
+Kea2更新配置文件时，用户本地配置文件也需要更新。
+
++ 用户配置文件在"项目根目录/configs"下，用户可根据自己的需求更改配置文件，其中"项目根目录/configs/version.json"存储配置文件版本信息。
+
++ 项目配置文件版本信息在"本地kea2所在目录/kea2/assets/config_version.json"下，Kea2更新时可能会更新项目配置文件，新增文件会在kea2 run时自行添加到用户配置文件中，但其他配置需要用户手动更新。
+
+更新用户配置文件后，请更新"项目根目录/configs/version.json"中的版本信息，以便我们查询您的本地配置文件是否过时。
+
 ## 应用崩溃缺陷
 
 Kea2 会将触发的崩溃缺陷转储在由 `-o` 指定输出目录中的 `fastbot_*.log` 文件内。你可以在 `fastbot_*.log` 中搜索关键词 `FATAL EXCEPTION` 来获取崩溃缺陷的具体信息。

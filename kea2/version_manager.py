@@ -6,7 +6,6 @@ from .utils import getLogger, getProjectRoot
 from typing import List, Set, TypedDict
 import shutil
 from importlib.metadata import version
-from dataclasses import dataclass
 
 
 logger = getLogger(__name__)
