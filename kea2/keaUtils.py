@@ -22,7 +22,7 @@ import uiautomator2 as u2
 import types
 
 PRECONDITIONS_MARKER = "preconds"
-PROP_MARKER = "prop"
+PROB_MARKER = "prob"
 MAX_TRIES_MARKER = "max_tries"
 
 logger = getLogger(__name__)
@@ -66,13 +66,8 @@ def prob(p: float):
     if not 0 < p <= 1.0:
         raise ValueError("The propbability should between 0 and 1")
     def accept(f):
-        @wraps(f)
-        def precondition_wrapper(*args, **kwargs):
-            return f(*args, **kwargs)
-
-        setattr(precondition_wrapper, PROP_MARKER, p)
-
-        return precondition_wrapper
+        setattr(f, PROB_MARKER, p)
+        return f
 
     return accept
 
@@ -394,15 +389,18 @@ class KeaTestRunner(TextTestRunner):
                 self.stepsCount = 0
                 while self.stepsCount < self.options.maxStep:
 
-                    self.stepsCount += 1
-                    logger.info("Sending monkeyEvent {}".format(
-                        f"({self.stepsCount} / {self.options.maxStep})" if self.options.maxStep != float("inf")
-                        else f"({self.stepsCount})"
-                        )
-                    )
-
                     try:
-                        xml_raw = fb.stepMonkey(self._monkeyStepInfo)
+                        if fb.executed_prop:
+                            fb.executed_prop = False
+                            xml_raw = fb.dumpHierarchy()
+                        else:
+                            self.stepsCount += 1
+                            logger.info("Sending monkeyEvent {}".format(
+                                f"({self.stepsCount} / {self.options.maxStep})" if self.options.maxStep != float("inf")
+                                else f"({self.stepsCount})"
+                                )
+                            )
+                            xml_raw = fb.stepMonkey(self._monkeyStepInfo)
                         propsSatisfiedPrecond = self.getValidProperties(xml_raw, result)
                     except u2.HTTPError:
                         logger.info("Connection refused by remote.")
@@ -425,7 +423,7 @@ class KeaTestRunner(TextTestRunner):
                     # filter the properties according to the given p
                     for propName, test in propsSatisfiedPrecond.items():
                         result.addPrecondSatisfied(test)
-                        if getattr(test, "p", 1) >= p:
+                        if getattr(test, PROB_MARKER, 1) >= p:
                             propsNameFilteredByP.append(propName)
 
                     if len(propsNameFilteredByP) == 0:
@@ -448,6 +446,7 @@ class KeaTestRunner(TextTestRunner):
 
                     result.updateExectedInfo()
                     fb.logScript(result.lastExecutedInfo)
+                    fb.executed_prop = True
                     result.flushResult()
 
                 if not end_by_remote:
@@ -522,6 +521,8 @@ class KeaTestRunner(TextTestRunner):
         for propName, test in self.allProperties.items():
             valid = True
             prop = getattr(test, propName)
+            p = getattr(prop, PROB_MARKER, 1)
+            setattr(test, PROB_MARKER, p)
             # check if all preconds passed
             for precond in prop.preconds:
                 # Dependency injection. Static driver checker for precond
